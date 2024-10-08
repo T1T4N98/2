@@ -1,0 +1,79 @@
+1.
+#!/bin/bash
+
+if grep -R "123" target; then
+    grep -R "123" target | xargs -0 cp -t . 
+    echo "cp - OK"
+else
+    echo "cp - FAILS"
+fi
+
+if grep -RL "123" target | xargs -0 rm; then
+    echo "rm - OK"
+else
+    echo "rm - FAILS"
+fi
+
+2.
+
+#!/bin/bash
+
+DIR1="dir1"
+DIR2="dir2"
+
+if [ ! -d "$DIR1" ]; then
+    echo "Каталог $DIR1 не существует."
+    exit 1
+fi
+
+if [ ! -d "$DIR2" ]; then
+    echo "Каталог $DIR2 не существует."
+    exit 1
+fi
+
+echo "Файлы, которые есть в $DIR1, но отсутствуют в $DIR2:"
+comm -13 <(ls "$DIR1" | sort) <(ls "$DIR2" | sort)
+
+echo ""
+echo "Файлы, которые есть в $DIR2, но отсутствуют в $DIR1:"
+comm -23 <(ls "$DIR2" | sort) <(ls "$DIR1" | sort)
+
+3.
+
+#!/bin/bash
+
+declare -A configs
+configs=( ["home"]="$HOME/.bashrc-home" ["work"]="$HOME/.bashrc-work" )
+
+switch_config() {
+    local mode=$1
+
+    if [[ -v configs[$mode] ]]; then
+        ln -sf "${configs[$mode]}" "$HOME/.bashrc"  
+        echo "Переключено на режим $mode."
+    else
+        echo "Неизвестный режим: $mode. Доступные режимы: home, work."
+    fi
+}
+
+read -p "Введите режим (home или work): " user_input
+
+switch_config "$user_input"
+ 4.
+79+46
+     0100 1111
+   + 0010 1110
+   ------------
+     0111 1101 (125)
+
+-97+96
+     1011 1111
+   + 0100 0000
+   ------------
+   1 1111 1111 (-1)
+   
+12868+-1219
+     0011 0010 0100 1100  (12868)
+   + 1111 1011 0011 1101  (-1219)
+   -----------------------
+   1 0011 1101 1001 1001 (11649)
